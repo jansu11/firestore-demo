@@ -17,9 +17,10 @@ const path = require("path");
 const TEST_FIREBASE_PROJECT_ID = "test-firestore-rules-project";
 
 // TODO: Change this to your real Firebase Project ID
-const REAL_FIREBASE_PROJECT_ID = "changeme";
+const REAL_FIREBASE_PROJECT_ID = "next-project-ebd63";
 
 const firebase = require("@firebase/rules-unit-testing");
+const { doesNotMatch } = require('assert');
 
 const seedItems = {
   "chocolate": 4.99,
@@ -179,7 +180,7 @@ describe("shopping cart items", async () => {
   });
 });
 
-describe.skip("adding an item to the cart recalculates the cart total. ", () => {
+describe("adding an item to the cart recalculates the cart total. ", () => {
   const admin = firebase.initializeAdminApp({ 
     projectId: REAL_FIREBASE_PROJECT_ID 
   }).firestore();
@@ -189,9 +190,6 @@ describe.skip("adding an item to the cart recalculates the cart total. ", () => 
   });
 
   it("should sum the cost of their items", async () => {
-    if (REAL_FIREBASE_PROJECT_ID === "changeme") {
-      throw new Error("Please change the REAL_FIREBASE_PROJECT_ID at the top of the test file");
-    }
 
     const db = firebase
         .initializeAdminApp({ projectId: REAL_FIREBASE_PROJECT_ID })
@@ -220,8 +218,10 @@ describe.skip("adding an item to the cart recalculates the cart total. ", () => 
         // two items added, the promise resolves, and the test passes.
         if (snap.exists && snap.data().itemCount === expectedCount && snap.data().totalPrice === expectedTotal) {
           // Call the function returned by `onSnapshot` to unsubscribe from updates
+          
           unsubscribe();
           resolve();
+          
         };
       });
     });
